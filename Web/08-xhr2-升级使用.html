@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>xhr2——升级使用</title>
+</head>
+
+<body>
+  <form id="f1">
+    姓名：<input type="text" name="name">
+    年龄：<input type="text" name="age">
+  </form>
+  <button id="btn11">请求超时</button>
+  <button id="btn21">发送post请求</button>
+  <br>
+  <p>
+    <!-- <input type="file" name="fs" id="fs" accept=".png,.jpeg"> -->
+    <input type="file" name="fs" id="fs" >
+    <button id="btn3">上传文件</button><br>
+    <img style="width: 100px;" src="" alt="" id="pre">
+  </p>
+  <script>
+    // 请求超时
+    btn11.onclick = function () {
+      // 创建xhr对象
+      var xhr = new XMLHttpRequest();
+      // 设置请求时限，浩渺
+      xhr.timeout = 3;
+      // 监听请求超时事件处理
+      xhr.ontimeout = function () {
+        console.log('请求超时')
+      }
+      // 调用open方法
+      xhr.open('get', 'http://127.0.0.1:8080/api/test/getAllGoods');
+      xhr.send();
+      xhr.onreadystatechange = function () {
+        if (xhr.status == 200 && xhr.readyState == 4) {
+          console.log(xhr.responseText)
+        }
+      }
+    }
+    // FormData
+    btn21.onclick = function () {
+      var f1 = document.querySelector('#f1')
+      var formData = new FormData(f1);
+      formData.append('gender', '男');
+      formData.append('address', '河北石家庄')
+      // 创建xhr对象
+      var xhr = new XMLHttpRequest();
+      // 调用open方法
+      xhr.open('post', 'http://127.0.0.1:8080/api/test/addUser2');
+      xhr.send(formData);
+      xhr.onreadystatechange = function () {
+        if (xhr.status == 200 && xhr.readyState == 4) {
+          console.log(11)
+          console.log(xhr.responseText)
+        }
+      }
+    }
+    // 上传文件
+    btn3.onclick = function () {
+      var files = fs.files;
+      if (files.length == 0) {
+        alert('请选择要上传的文件')
+        return false;
+      }
+      // 图片类型
+      var mimes = ['image/gif', 'image/png', 'image/jpeg', 'image/bmp', 'image/webp'];
+      if(mimes.indexOf(files[0].type)==-1){
+        alert('请上传图片类型文件');
+        return false;
+      }
+      // 创建FormData对象
+      var formData = new FormData();
+      formData.append('fName', files[0]);
+
+      // ajax请求
+      // 创建xhr对象
+      var xhr = new XMLHttpRequest();
+      // 调用open方法
+      xhr.open('post', 'http://127.0.0.1:8080/api/test/upload');
+      xhr.send(formData);
+      xhr.onreadystatechange = function () {
+        if (xhr.status == 200 && xhr.readyState == 4) {
+          console.log(11)
+          console.log(xhr.responseText)
+          pre.src = 'http://127.0.0.1:8080/' + xhr.responseText;
+        }
+      }
+    }
+
+  </script>
+</body>
+
+</html>

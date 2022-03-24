@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>xhr基本使用</title>
+</head>
+
+<body>
+  <button id="btn11">发送get请求——无参数</button>
+  <button id="btn12">发送get请求——有参数</button>
+  <button id="btn21">发送post请求</button>
+  <script>
+    // get请求
+    btn11.onclick = function () {
+      // 创建xhr对象
+      var xhr = new XMLHttpRequest();
+      // 调用open方法
+      xhr.open('get', 'http://127.0.0.1:8080/api/test/getAllGoods');
+      xhr.send();
+      xhr.onreadystatechange = function () {
+        if (xhr.status == 200 && xhr.readyState == 4) {
+          console.log(xhr.responseText)
+        }
+      }
+    }
+    // get请求
+    btn12.onclick = function () {
+      // 创建xhr对象
+      var xhr = new XMLHttpRequest();
+      // 调用open方法
+      xhr.open('get', 'http://127.0.0.1:8080/api/test/getUser?name=李&gender=男');
+      xhr.send();
+      xhr.onreadystatechange = function () {
+        if (xhr.status == 200 && xhr.readyState == 4) {
+          console.log(xhr.responseText)
+        }
+      }
+    }
+    // post请求
+    btn21.onclick = function () {
+      // 创建xhr对象
+      var xhr = new XMLHttpRequest();
+      // 调用open方法
+      xhr.open('post', 'http://127.0.0.1:8080/api/test/addUser');
+      // 设置请求头
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+      xhr.send('name=admin&age=10&tel=1895321678');
+      xhr.onreadystatechange = function () {
+        if (xhr.status == 200 && xhr.readyState == 4) {
+          console.log(xhr.responseText)
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

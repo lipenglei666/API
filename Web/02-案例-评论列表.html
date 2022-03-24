@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>评论列表</title>
+  <link rel="stylesheet" href="./lib/bootstrap.css">
+  <script src="./lib/jquery.js"></script>
+</head>
+
+<body style="padding: 20px;">
+
+
+  <div class="panel panel-success">
+    <div class="panel-heading">
+      <h3 class="panel-title">评论列表</h3>
+    </div>
+    <div class="panel-body">
+      <form onsubmit="">
+        <div class="form-group">
+          <label for="exampleInputName2">评论人</label>
+          <input type="text" required name="cname" class="form-control" id="cname" placeholder="评论人">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail2">评论内容</label>
+          <input type="text" required name="content" class="form-control" id="content" placeholder="评论内容">
+        </div>
+        <button id="btn_add" type="submit" class="btn btn-success">发表评论</button>
+      </form>
+
+    </div>
+
+    <ul class="list-group">
+      <li class="list-group-item">
+        <span class="badge">评论时间</span>
+        <span class="badge ">评论人</span>
+        评论内容
+      </li>
+    </ul>
+
+
+  </div>
+
+  <script>
+    // 获取评论列表函数
+    function getAllComment() {
+      $.get('http://127.0.0.1:8080/api/comment/getAllComment', function (obj) {
+        if (obj && obj.status == 200) {
+          let rows = [];
+          obj.data.forEach(function (value, index) {
+            var li = `
+            <li class="list-group-item">
+            <span class="badge">${value.time}</span>
+            <span class="badge">${value.cname}</span>
+            ${value.content}
+          `
+            rows.push(li);
+          });
+          $('.list-group').empty().html(rows.join(''))
+        }
+      })
+    }
+
+    // 渲染列表
+    getAllComment();
+
+    // 添加图书
+    $('#btn_add').click(function (e) {
+      if($('#cname').val().trim().length==0)
+      {
+        alert('名字不能为空')
+        $('#cname').focus();
+        return false; 
+      }
+      if($('#content').val().trim().length==0)
+      {
+        alert('内容不能为空')
+        $('#content').focus();
+        return false; 
+      }
+      var data = $('form').serialize();
+      $.ajax({
+        url: 'http://127.0.0.1:8080/api/comment/addComment',
+        data: data,
+        type: 'post',
+        success: function (data) {
+          if (data.status == 200) {
+            alert('添加成功')
+            getAllComment();
+            $('#cname').val('')
+            $('#content').val('')
+          } else[
+            alert('添加失败')
+          ]
+        }
+
+
+      })
+      return false;
+    });
+
+  </script>
+
+</body>
+
+</html>

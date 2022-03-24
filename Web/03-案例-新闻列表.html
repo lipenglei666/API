@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/news.css">
+  <script src="./lib/jquery.js"></script>
+  <script src="./lib/template-web.js"></script>
+</head>
+
+<body>
+  <div class="news">
+    <ul>
+      <li>
+        <div class="fl">
+          <a href="#">11年前，“宁坐宝马哭，不坐自行车笑”的女孩马诺，如今咋样了</a>
+          <div class="info">
+            <span>轻轻的鱼</span>
+            <span>666评论</span>
+            <span>2022年12月12日</span>
+          </div>
+        </div>
+        <div class="fr">
+          <a href="#">
+            <img src="./images/01.jpg" alt="">
+          </a>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <!-- 模版 -->
+  <script type="text/html" id="newsList">
+    {{each data}}
+    <li>
+      <div class="fl">
+        <a href="#"> {{$value.title}}</a>
+        <div class="info">
+          <span> {{$value.author}}</span>
+          <span> {{$value.ccount}}评论</span>
+          <span> {{$value.time | dateFormat}}</span>
+        </div>
+      </div>
+      <div class="fr">
+        <a href="#">
+          <img src="{{$value.imgSrc}}" alt="">
+        </a>
+      </div>
+    </li>
+    {{/each}}
+  </script>
+  <script>
+    function dateFormat(time) {
+      var date = new Date(time);
+      var year = date.getFullYear();
+      var month = date.getMonth()+1;
+      var day = date.getDate();
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var seconds = date.getSeconds();
+
+      month = month < 10?'0'+month:month;
+      day = day < 10?'0'+day:day;
+      hours = hours < 10?'0'+hours:hours;
+      minutes = minutes < 10?'0'+minutes:minutes;
+      seconds = seconds < 10?'0'+seconds:seconds;
+
+      return year + '年' + month + '月' + day + '日' + hours + ':' + minutes + ':' + seconds;
+    }
+    template.defaults.imports.dateFormat = dateFormat;
+    $.get('http://127.0.0.1:8080/api/news/getNews',function(results){
+      console.log(results);
+      var htmlStr = template('newsList',results);
+      console.log(htmlStr)
+      $('ul').html(htmlStr);
+    })
+    
+ </script>
+</body>
+
+</html>

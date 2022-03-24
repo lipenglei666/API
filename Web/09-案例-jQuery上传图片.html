@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      padding: 20px;
+    }
+    .headImg {
+      display: block;
+    }
+    button {
+      width: 50px;
+      height: 50px;
+      font-size: 40px;
+      line-height: 40px;
+    }
+    span{
+      display: inline-block;
+      font: normal 20px/40px '微软雅黑';
+    }
+    input {
+      display: none !important;
+    }
+    .loading img {
+      width: 150px;
+    }
+    .loading {
+      display: none;
+    }
+  </style>
+  <script src="./lib/jquery.js"></script>
+</head>
+<body>
+  <p>
+   <button>+</button>
+   <span>a.jpg</span>
+   <input class="headImg" accept=".jpeg,.png" id="headImg" type="file" name="headImg">
+  </p>
+  <img src="" style="width: 200px;" alt="">
+  <div class="loading">
+    <img src="./images/loading.gif" alt="正在上传">
+  </div>
+  <script>
+    // 文件上传控件注册事件
+     $('#headImg').change(upLoadImg)
+    function upLoadImg(){
+      // 获取上传的文件
+      var file = this.files[0];
+      $('span').html(file.name);
+      // 创建formData对象
+      var fd = new FormData();
+      fd.append('fName',file)
+      // 发送请求
+      $.ajax({
+        url:'http://localhost:8080/api/test/upload',
+        type:'post',
+        data:fd,
+        // 不对 FormData 中的数据进行 url 编码，而是将 FormData 数据原样发送到服务器
+        processData:false,
+        // 不修改 Content-Type 属性，使用 FormData 默认的 Content-Type 值
+        contentType:false,
+        success:function(uploadUrl){
+          $('img').attr('src','http://localhost:8080/'+uploadUrl)
+        }
+      })
+    }
+    // 点击按钮触发文件上传事件
+    $('button').click(function(){
+      $('#headImg').click();
+    });
+    // 检测ajax
+    $(document).ajaxStart(function(){
+      $('.loading').show();
+    })
+    $(document).ajaxStop(function(){
+      $('.loading').hide();
+    })
+  </script>
+</body>
+</html>

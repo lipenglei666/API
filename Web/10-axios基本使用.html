@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="./lib/axios.js"></script>
+</head>
+
+<body>
+  <button id="btn1">get请求1-无参数</button>
+  <button id="btn2">get请求2-带参数</button>
+  <button id="btn3">post请求1</button>
+  <button id="btn4">post请求2</button>
+  <button id="btn5">上传图片</button>
+  <input type="file" id="file">
+  <br>
+  <img id="headImg" style="width: 100px;" src="" alt="">
+  <script>
+    // get请求1-无参数
+    btn1.onclick = function () {
+      axios.get('http://localhost:8080/api/test/getAllGoods').then(function (res) {
+        console.log(res.data)
+      })
+    }
+    // get请求2-带参数
+    btn2.onclick = function () {
+      var params = { name: '李', gender: '男' }
+      axios.get('http://localhost:8080/api/test/getUser', { params: params }).then(function (res) {
+        console.log(res.data)
+      })
+    }
+    // post请求
+    btn3.onclick = function () {
+      var params = { name: '张三', gender: '男' }
+      axios.post('http://localhost:8080/api/test/addUser', params).then(function (res) {
+        console.log(res.data)
+      })
+    }
+    // post请求
+    btn4.onclick = function () {
+      var params = { name: '张三', gender: '男' }
+      axios({
+        url: 'http://localhost:8080/api/test/addUser',
+        data: { name: '张三', gender: '男' },
+        method: 'post'
+      }).then(res => {
+        console.log(res.data);
+      })
+    }
+    // 上传图片
+    btn5.onclick = function () {
+      var formData = new FormData();
+      var file = document.getElementById('file').files[0];
+      formData.append('fName',file);
+      axios.post('http://localhost:8080/api/test/upload', formData).then(function (res) {
+        headImg.src = 'http://localhost:8080/' + res.data
+      })
+    }
+  </script>
+</body>
+
+</html>

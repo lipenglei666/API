@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图书列表</title>
+  <link rel="stylesheet" href="./lib/bootstrap.css">
+  <script src="./lib/jquery.js"></script>
+</head>
+
+<body style="padding: 20px;">
+
+
+  <div class="panel panel-success">
+    <div class="panel-heading">
+      <h3 class="panel-title">图书列表</h3>
+    </div>
+    <div class="panel-body">
+      <form class="form-inline">
+        <div class="form-group">
+          <label for="exampleInputName2">图书名称</label>
+          <input type="text" required name="name" class="form-control" id="bname" placeholder="三国演义">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail2">作者名字</label>
+          <input type="text" required name="author" class="form-control" id="author" placeholder="罗贯中">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail2">价格</label>
+          <input type="text" required name="price" class="form-control" id="price" placeholder="18.8">
+        </div>
+        <button id="btn_add" type="button" class="btn btn-success">添加</button>
+      </form>
+
+
+    </div>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>编号</th>
+          <th>书名</th>
+          <th>作者</th>
+          <th>价格</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+          <td>
+            <button type="submit" class="btn btn-danger">删除</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // 获取图书列表函数
+    function getBookList() {
+      $.get('http://127.0.0.1:8080/api/book/getAllbooks', function (obj) {
+        if (obj && obj.status == 200) {
+          let rows = [];
+          obj.data.forEach(function (value, index) {
+            var tr = `
+              <tr>
+                  <td>${index + 1}</td>
+                  <td>${value.name}</td>
+                  <td>${value.author}</td>
+                  <td>${value.price}</td>
+                  <td>
+                  <button data-id="${value.id}" type="button" class="btn btn-danger btn-del">删除</button>
+                  </td>
+              </tr>
+          `
+            rows.push(tr);
+          });
+          $('tbody').empty().html(rows.join(''))
+        }
+      })
+    }
+
+    // 渲染列表
+    getBookList();
+
+    // 添加图书
+    $('#btn_add').click(function () {
+      $.ajax({
+        url: 'http://127.0.0.1:8080/api/book/addBook',
+        data: {
+          name: $('#bname').val(),
+          author: $('#author').val(),
+          price: $('#price').val()
+        },
+        type: 'post',
+        success: function (data) {
+          console.log(data)
+          if (data.status == 200) {
+            alert('添加成功')
+            getBookList();
+            $('#bname').val('')
+            $('#author').val('')
+            $('#price').val('')
+          } else[
+            alert('添加失败')
+          ]
+        }
+
+
+      })
+      return false;
+    });
+
+    // 删除图书
+    $('tbody').delegate('.btn-del','click',function(){
+      if(confirm('确定要删除吗')){
+        var id = $(this).data().id;
+        $.ajax({
+          type:'post',
+          url:'http://127.0.0.1:8080/api/book/delBook',
+          data:{id:id},
+          success:function(data){
+            if (data.status == 200) {
+            alert('删除成功')
+            getBookList();
+          } else[
+            alert('删除失败')
+          ]
+          }
+        })
+      }
+    })
+  </script>
+
+</body>
+
+</html>

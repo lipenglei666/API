@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./lib/bootstrap.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+
+    .progress {
+      width: 500px;
+      margin-top: 50px;
+      color: red;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="file" id="photos">
+  <!-- 预览图片 -->
+  <div id="open_photo"></div>
+  <div class="progress" id="progress">
+    <div id="processDom" class="progress-bar progress-bar-striped active" style="width: 0%">
+
+    </div>
+  </div>
+
+
+  <script>
+    photos.onchange = function () {
+      // 创建FormData对象
+      var formdata = new FormData();
+      // 二进制文件添加到表单对象中
+      formdata.append('fName', this.files[0])
+
+      var xhr = new XMLHttpRequest();
+      progress.style.display = 'block';
+      xhr.open('post', 'http://localhost:8080/api/test/upload')
+      // 监听上传进度-xhr.upload.onprogress事件
+      xhr.upload.onprogress = function (ev) {
+        // loaded已经上传的大小，total总大小
+        var goNum = (ev.loaded / ev.total) * 100;
+        processDom.style.width = goNum + '%';
+        processDom.innerText = parseInt(goNum) + '%';
+      }
+      // 发送请求
+      xhr.send(formdata);
+      xhr.onload = function () {
+        progress.style.display = 'none';
+        processDom.style.width = '0px';
+        processDom.innerText = '0%';
+        var img = document.createElement('img');
+        img.style.width = '100px';
+        img.src = 'http://localhost:8080/' + xhr.responseText;
+        open_photo.appendChild(img);
+      }
+
+
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="info">
+
+  </div>
+  <script type="text/html" id="user">
+    <ul>
+      <li>姓名：{{name}}</li>
+      <li>年龄：{{age}}</li>
+      <li>性别：{{gender}}</li>
+      <li>地址：{{address}}</li>
+      <li>电话：{{tel}}</li>
+    </ul>
+  </script>
+  <script>
+    function template(id,data){
+      // 获取内容
+      var html = document.querySelector('#'+id).innerHTML;
+      // 设置正则
+      var reg = /\s*{{([a-zA-Z_]+)}}\s*/;
+      // 匹配内容
+      var temp = null;
+      while(temp=reg.exec(html))  {
+        html = html.replace(temp[0],data[temp[1]]);
+      }
+      return html;
+
+    }
+    var obj = {
+      name:'张三',
+      age:10,
+      gender:'男',
+      address:'河北石家庄',
+      tel:'19987654321'
+    }
+    var html = template('user',obj);
+    document.querySelector('#info').innerHTML = html;
+  </script>
+</body>
+</html>
